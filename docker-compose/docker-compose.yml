@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - appnet
+
+  urlshortner:
+    build:
+      context: .
+      dockerfile: DockerFile
+    depends_on:
+      - sqlserver
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: >
+        Server=sqlserver;
+        Database=UrlShortenerDb;
+        User Id=sa;
+        Password=YourStrong!Passw0rd;
+        TrustServerCertificate=True;
+    ports:
+      - "5000:8080"
+    networks:
+      - appnet
+
+networks:
+  appnet:
