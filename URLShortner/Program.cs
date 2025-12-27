@@ -34,7 +34,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // endpoint that creates the short url
-app.MapPost("/api/shorten", async (
+app.MapPost("shorten", async (
     ShortenUrlRequest request,
     UrlShorteningService urlShorteningService,
     ApplicationDbContext dbContext,
@@ -55,7 +55,7 @@ app.MapPost("/api/shorten", async (
         Id = Guid.NewGuid(),
         LongUrl = request.Url,
         Code = code,
-        ShortUrl = $"{httpsContext.Request.Scheme}://{httpsContext.Request.Host}/api/{code}",
+        ShortUrl = $"{httpsContext.Request.Scheme}://{httpsContext.Request.Host}/{code}",
         CreatedOnUtc = DateTime.UtcNow
     };
 
@@ -68,4 +68,16 @@ app.MapPost("/api/shorten", async (
     return Results.Ok(shortenedUrl.ShortUrl);
 });
 
+app.MapGet("/{code}",async(  string code, ApplicationDbContext dbContext)=>
+{
+    var shortenUrl = await dbContext.ShortenUrls.FirstOrDefaultAsync(x => x.Code == code);
+
+    if(shortenUrl == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Redirect(shortenUrl.LongUrl);
+});
+app.UseHttpsRedirection();
 app.Run();
