@@ -2,5 +2,5 @@
 public class ShortenUrlRequest
 {
     // in this case we will return only the shorten url that will be created in entity folder shortenUrl.cs
-    public string Url { get; set; }= string.Empty;
+    public required string Url { get; set; }
 }

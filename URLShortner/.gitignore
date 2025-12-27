@@ -1,0 +1,54 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Rider
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# ASP.NET Core
+appsettings.Development.json
+appsettings.Local.json
+
+# Secrets
+secrets.json
+
+# EF Core
+Migrations/*.csproj
+
+# NuGet
+*.nupkg
+.nuget/
+packages/
+
+# Publish output
+publish/
+wwwroot/lib/
+
+# Test results
+TestResults/
+
+# Backup files
+*.bak
+*.tmp
+*.old

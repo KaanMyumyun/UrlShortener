@@ -1,50 +1,48 @@
-// we use ths class of creating the random link
 using Microsoft.EntityFrameworkCore;
 
+// we use this class for creating the random link
 public class UrlShorteningService
 {
-    //we do 7 because it gives us billions of combinations 
+    // we do 7 because it gives us billions of combinations
     public const int NumberOfCharsInShortLink = 7;
 
-    // this is the charecters used to make the link 
+    // this is the characters used to make the link
     private const string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnoprstuvwxyz0123456789";
 
-    //we inject the data base to check if its unique or not 
+    // we inject the database to check if it's unique or not
     private readonly ApplicationDbContext _dbContext;
-    // we do this so when we create this service you must give it an applicationDbContext
+
+    // we do this so when we create this service you must give it an ApplicationDbContext
     public UrlShorteningService(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
-    //to generate a random index 
+
+    // random generator
     private readonly Random _random = new();
 
-    //generating the random url
-    // async makes this method might need to wait for something slow (like a database)and the app doesnt freeze while waiting
+    // generating the random url
+    // async because database calls are slow
     public async Task<string> GenerateUniqueCode()
     {
-        //we make char array that will be the random  text for the shorturl
         var codeChars = new char[NumberOfCharsInShortLink];
 
         while (true)
         {
-            // we loop 7 times 
+            // generate random code
             for (var i = 0; i < NumberOfCharsInShortLink; i++)
             {
-                //we get random index from 
-                int randomIndex = _random.Next(Alphabet.Length - 1);
-                // we assing the from aphabet the random index we generated
+                int randomIndex = _random.Next(Alphabet.Length);
                 codeChars[i] = Alphabet[randomIndex];
             }
+
             var code = new string(codeChars);
 
+            // check if the code already exists
             if (!await _dbContext.ShortenUrls.AnyAsync(s => s.Code == code))
             {
                 return code;
             }
         }
-
-
-
     }
 }

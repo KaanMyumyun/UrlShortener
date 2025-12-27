@@ -1,22 +1,23 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Writers;
 
-// this is a helper method for for database migration when app starts
-//like database doesnt exit create it update the databased
+// this is a helper method for database migration when app starts
+// like if database doesn't exist create it, update the database
 // only 1 instance runs once per application start up
 public static class MigrationExtensions
 {
-    //this WebApplication app that makes the apply migration is a extension method 
-    // si we can call it app.ApllyMigration
+    // this WebApplication app that makes the apply migration is an extension method
+    // so we can call it app.ApplyMigrations()
     public static void ApplyMigrations(this WebApplication app)
     {
-        // a temp container so dbContext to exist when done release the memory 
-        using var scoped = app.Services.CreateScope();
-        //asks if this servise exist if not throw a erro
-        // dbContext is pen after writing in the database it gets thrown away
-        var dbContext = scoped.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        // a temp container so dbContext exists, when done release the memory
+        using var scope = app.Services.CreateScope();
 
-        // create the database if exist if not and update collums and tables if they arent matching the code
+        // asks if this service exists, if not throw an error
+        // dbContext is open only while writing to the database
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        // create the database if it doesn't exist
+        // update columns and tables if they aren't matching the code
         dbContext.Database.Migrate();
     }
 }

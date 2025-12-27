@@ -1,11 +1,21 @@
-using System.Data;
+using System.ComponentModel.DataAnnotations;
 
-// we use entity to make the data base structure
+// this represents a row in the database
 public class ShortenUrl
 {
-    public Guid Id{get; set;}
+    // primary key
+    public Guid Id { get; set; }
+
+    // original long url
+    [MaxLength(2048)]
     public string LongUrl { get; set; } = string.Empty;
-    public string ShortUrl { get; set; } = string.Empty;
+
+    // unique short code
     public string Code { get; set; } = string.Empty;
-    public DateTime CreatedOnUtc{get;set;}
+
+    // full shortened url
+    public string ShortUrl { get; set; } = string.Empty;
+
+    // creation timestamp
+    public DateTime CreatedOnUtc { get; set; }
 }
