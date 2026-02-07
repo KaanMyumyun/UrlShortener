@@ -310,6 +310,8 @@ Planned hosting approach:
 - Secure secrets management using environment variables
 - HTTPS-enabled public access
 
+---
+
 # Testing Strategy (Planned)
 
 * Unit tests for URL generation logic
@@ -333,6 +335,4 @@ Planned hosting approach:
 * Build a production-style URL shortener
 * Apply clean backend architecture principles
 
----
-But honestly — this README is already 🔥
-You should be proud of it.
+
