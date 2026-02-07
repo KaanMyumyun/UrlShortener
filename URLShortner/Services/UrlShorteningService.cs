@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 // we use this class for creating the random link
-public class UrlShorteningService
+public class UrlShorteningService:iUrlShorteningService
 {
     // we do 7 because it gives us billions of combinations
     public const int NumberOfCharsInShortLink = 7;
@@ -43,6 +46,49 @@ public class UrlShorteningService
             {
                 return code;
             }
+        }  
+    }
+
+    public async Task<string> URlReturn(string code)
+    {
+        var Url = await _dbContext.ShortenUrls.FirstOrDefaultAsync(x => x.Code== code);
+         return Url.LongUrl;  
+    }
+
+  // Modified to return the ShortUrl string
+public async Task<string> ShortenUrlRequest(ShortenUrlRequest dto, HttpContext httpsContext)
+{
+    if (!Uri.TryCreate(dto.Url, UriKind.Absolute, out var uri) ||
+        (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+    {
+        throw new ArgumentException("Invalid URL.");
+    }
+    
+    for (int attempt = 0; attempt < 5; attempt++)
+    {
+        var code = await GenerateUniqueCode();
+        var shortenedUrl = new ShortenUrl
+        {
+            Id = Guid.NewGuid(),
+            LongUrl = dto.Url,
+            Code = code,
+            ShortUrl = $"{httpsContext.Request.Scheme}://{httpsContext.Request.Host}/{code}",
+            CreatedOnUtc = DateTime.UtcNow
+        };
+        
+        _dbContext.ShortenUrls.Add(shortenedUrl);
+        
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+            return shortenedUrl.ShortUrl; // Just return the ShortUrl you already created!
+        }
+        catch (DbUpdateException)
+        {
+            _dbContext.Entry(shortenedUrl).State = EntityState.Detached;
         }
     }
+    
+    throw new Exception("Could not generate short link. Try again.");
+}
 }

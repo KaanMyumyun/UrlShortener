@@ -2,8 +2,24 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// builder.Services.AddEndpointsApiExplorer();
+// builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactPolicy", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+            "https://localhost:5173",
+            "http://localhost:3000",
+            "https://localhost:3000"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 
 // this line tells the app how to connect and what provider to use for the database
 // it sets the rules not the database itself
@@ -17,8 +33,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 
 // we register our service so it can be injected
-builder.Services.AddScoped<UrlShorteningService>();
-
+builder.Services.AddScoped<iUrlShorteningService,UrlShorteningService>();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer(); // Helps Swagger find your routes
+builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -26,58 +44,13 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-    // apply migrations automatically when app starts
-    app.ApplyMigrations();
 }
 
-app.UseHttpsRedirection();
 
+// app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("ReactPolicy");
+app.MapControllers();
 // endpoint that creates the short url
-app.MapPost("shorten", async (
-    ShortenUrlRequest request,
-    UrlShorteningService urlShorteningService,
-    ApplicationDbContext dbContext,
-    HttpContext httpsContext) =>
-{
-    // we check if the url is valid if not we return bad request
-    if (!Uri.TryCreate(request.Url, UriKind.Absolute, out _))
-    {
-        return Results.BadRequest("The specified Url is invalid");
-    }
 
-    // generates a random short code and checks if it is unique
-    var code = await urlShorteningService.GenerateUniqueCode();
-
-    // this creates a ShortenUrl entity which represents a row in the database
-    var shortenedUrl = new ShortenUrl
-    {
-        Id = Guid.NewGuid(),
-        LongUrl = request.Url,
-        Code = code,
-        ShortUrl = $"{httpsContext.Request.Scheme}://{httpsContext.Request.Host}/{code}",
-        CreatedOnUtc = DateTime.UtcNow
-    };
-
-    // mark entity to be saved
-    dbContext.ShortenUrls.Add(shortenedUrl);
-
-    // actually write to db
-    await dbContext.SaveChangesAsync();
-
-    return Results.Ok(shortenedUrl.ShortUrl);
-});
-
-app.MapGet("/{code}",async(  string code, ApplicationDbContext dbContext)=>
-{
-    var shortenUrl = await dbContext.ShortenUrls.FirstOrDefaultAsync(x => x.Code == code);
-
-    if(shortenUrl == null)
-    {
-        return Results.NotFound();
-    }
-
-    return Results.Redirect(shortenUrl.LongUrl);
-});
-app.UseHttpsRedirection();
 app.Run();
