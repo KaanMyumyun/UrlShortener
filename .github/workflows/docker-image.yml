@@ -28,7 +28,7 @@ jobs:
           docker build --no-cache -f URLShortner/Dockerfile \
             -t kstkaan/url-backend:latest \
             -t kstkaan/url-backend:${IMAGE_TAG} \
-            ./URLShortner
+            .
 
       - name: Push backend image
         run: |
