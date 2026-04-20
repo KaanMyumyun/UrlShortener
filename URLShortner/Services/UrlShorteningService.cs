@@ -1,7 +1,10 @@
+namespace URL.Services;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 
 // we use this class for creating the random link
 public class UrlShorteningService:iUrlShorteningService

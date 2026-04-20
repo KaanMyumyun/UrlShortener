@@ -27,7 +27,8 @@ jobs:
         run: |
           docker build --no-cache -f URLShortner/Dockerfile \
             -t kstkaan/url-backend:latest \
-            -t kstkaan/url-backend:${IMAGE_TAG} .
+            -t kstkaan/url-backend:${IMAGE_TAG} \
+            ./URLShortner
 
       - name: Push backend image
         run: |
@@ -37,11 +38,10 @@ jobs:
       - name: Build frontend image
         run: |
           docker build --no-cache \
-            --build-arg VITE_API_URL=${{ secrets.AWS_API_URL }} \
             -f front-end/Dockerfile \
             -t kstkaan/url-frontend:latest \
             -t kstkaan/url-frontend:${IMAGE_TAG} \
-            ./url-frontend
+            ./front-end
 
       - name: Push frontend image
         run: |
