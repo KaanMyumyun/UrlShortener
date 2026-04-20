@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY URLShortner/*.csproj URLShortner/
+COPY URLShortner/URLShortner.csproj URLShortner/
 RUN dotnet restore URLShortner/URLShortner.csproj
 
 COPY . .
