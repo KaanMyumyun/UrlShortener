@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CreateShortUrl, ReturnUrl } from "../api/Urlapi";
+import { CreateShortUrl } from "../api/Urlapi";
 import type { ShortenUrlRequest } from "../api/Urlapi";
 
 export default function UrlShortener() {
@@ -46,7 +46,6 @@ export default function UrlShortener() {
         background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         fontFamily: "system-ui, -apple-system, sans-serif",
 
-        // ✅ Center everything on the screen
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -294,7 +293,7 @@ export default function UrlShortener() {
                 </button>
 
                 <button
-                  onClick={() => ReturnUrl(shortUrl)}
+                  onClick={() => window.open(shortUrl, '_blank')}
                   style={{
                     flex: 1,
                     padding: "24px",

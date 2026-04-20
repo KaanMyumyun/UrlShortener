@@ -1,4 +1,4 @@
-const Base_URL = "http://localhost:5245/api/Url";
+const Base_URL = "http://localhost:5272/api/Url";
 export interface ShortenUrlRequest {
   Url: string;
 }

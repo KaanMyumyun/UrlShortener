@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_DB: urlshortenerdb
+      POSTGRES_USER: urlshorteneruser
+      POSTGRES_PASSWORD: UrlShort123!
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+      
+  backend:
+    build:
+      context: .
+      dockerfile: URLShortner/Dockerfile
+    container_name: url-backend
+    depends_on:
+      - postgres
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=urlshortenerdb;Username=urlshorteneruser;Password=UrlShort123!"
+    ports:
+      - "5272:8080"
+      
+  frontend:
+    build:
+      context: ./front-end
+      dockerfile: Dockerfile
+    container_name: url-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:8080"
+
+volumes:
+  postgres_data:

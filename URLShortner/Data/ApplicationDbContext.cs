@@ -18,6 +18,7 @@ public class ApplicationDbContext : DbContext
         // like columns, indexes, constraints and relationships between the tables
         modelBuilder.Entity<ShortenUrl>(builder =>
         {
+            builder.ToTable("ShortenUrls");
             // to get more performance we set max length so there isnt confusion
             builder
                 .Property(s => s.Code)
