@@ -183,7 +183,7 @@ GET /api/Url/Q1g3Cx0
 
 # Error Handling
 
-The API uses standard HTTP status codes:
+The API uses sdtandard HTTP status codes:
 
 * `200 OK` – Request successful
 * `400 Bad Request` – Invalid input or malformed URL
