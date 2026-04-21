@@ -1,1 +1,1 @@
-public class g{public int MyProperty { get; set; }}
+public class My{public int MyProperty { get; set; }}
