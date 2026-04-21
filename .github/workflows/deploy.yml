@@ -15,9 +15,9 @@ jobs:
         with:
           host: ${{ secrets.AZURE_HOST }}
           username: ${{ secrets.AZURE_USERNAME }}
-          password: ${{ secrets.AZURE_PASSWORD }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
           script: |
-            cd /home/ec2-user/hospital-backend/hospital-backend
+            cd /home/azureuser/hospital-backend/hospital-backend
 
             # pull latest backend image
             docker pull kstkaan/url-backend:latest
