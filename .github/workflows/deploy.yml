@@ -1,0 +1,43 @@
+name: Deploy to Azure
+
+on:
+  workflow_run:
+    workflows: ["Docker Image CI"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Azure
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AZURE_HOST }}
+          username: ${{ secrets.AZURE_USERNAME }}
+          password: ${{ secrets.AZURE_PASSWORD }}
+          script: |
+            cd /home/ec2-user/hospital-backend/hospital-backend
+
+            # pull latest backend image
+            docker pull kstkaan/url-backend:latest
+
+            # stop + remove the old backend container 
+            docker-compose stop backend || true
+            docker-compose rm -f backend || true
+
+            # recreate using the new image
+            docker-compose up -d backend
+
+            # pull latest frontend image
+            docker pull kstkaan/url-frontend:latest
+
+            # stop + remove the old frontend container 
+            docker-compose stop frontend || true
+            docker-compose rm -f frontend || true
+
+            # recreate using the new image
+            docker-compose up -d frontend
+
+            docker image prune -f
+            echo "Deploy complete for SHA: $IMAGE_TAG"
