@@ -18,25 +18,26 @@ jobs:
           key: ${{ secrets.AZURE_SSH_KEY }}
           script: |
             cd ~/app
+
             # pull latest backend image
-            docker pull kstkaan/url-backend:latest
+            sudo docker pull kstkaan/url-backend:latest
 
             # stop + remove the old backend container 
-            docker-compose stop backend || true
-            docker-compose rm -f backend || true
+            sudo docker-compose stop backend || true
+            sudo docker-compose rm -f backend || true
 
             # recreate using the new image
-            docker-compose up -d backend
+            sudo docker-compose up -d backend --force-recreate
 
             # pull latest frontend image
-            docker pull kstkaan/url-frontend:latest
+            sudo docker pull kstkaan/url-frontend:latest
 
             # stop + remove the old frontend container 
-            docker-compose stop frontend || true
-            docker-compose rm -f frontend || true
+            sudo docker-compose stop frontend || true
+            sudo docker-compose rm -f frontend || true
 
             # recreate using the new image
-            docker-compose up -d frontend
+            sudo docker-compose up -d frontend --force-recreate
 
-            docker image prune -f
+            sudo docker image prune -f
             echo "Deploy complete for SHA: $IMAGE_TAG"
