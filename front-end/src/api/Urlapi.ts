@@ -1,7 +1,9 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const BASE_DOMAIN = import.meta.env.VITE_API_URL || 'http://localhost:5272';
+const BASE_DOMAIN =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? 'http://localhost:5272' : '');
 
 export const apiClient = axios.create({
   baseURL: `${BASE_DOMAIN}/api`,
@@ -31,7 +33,7 @@ apiClient.interceptors.response.use(
     }
 
     if (error.response?.status === 401) {
-      toast.error("Your session has expired. Please log in again.");
+      toast.error('Your session has expired. Please log in again.');
     }
 
     return Promise.reject(error);
