@@ -1,1 +1,0 @@
-public class My{public int test { get; set; }}
