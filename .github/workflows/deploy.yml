@@ -19,7 +19,19 @@ jobs:
           key: ${{ secrets.AZURE_SSH_KEY }}
           script: |
             cd ~/app
-            sudo docker compose pull
-            sudo docker compose up -d --force-recreate --remove-orphans
+            # pull latest backend image
+            sudo docker compose pull backend
+            # stop + remove the old backend container
+            sudo docker compose stop backend || true
+            sudo docker compose rm -f backend || true
+            # recreate using the new image
+            sudo docker compose up -d --force-recreate --no-deps backend
+            # pull latest frontend image
+            sudo docker compose pull frontend
+            # stop + remove the old frontend container
+            sudo docker compose stop frontend || true
+            sudo docker compose rm -f frontend || true
+            # recreate using the new image
+            sudo docker compose up -d --force-recreate --no-deps frontend
             sudo docker image prune -f
             echo "Deploy complete"
