@@ -1,4 +1,4 @@
 public class Eyo
 {
-    public int MyProperty { get; set; }
+    public int name { get; set; }
 }
