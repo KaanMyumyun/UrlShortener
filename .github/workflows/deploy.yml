@@ -9,6 +9,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Deploy to Azure
         uses: appleboy/ssh-action@master
@@ -18,26 +19,7 @@ jobs:
           key: ${{ secrets.AZURE_SSH_KEY }}
           script: |
             cd ~/app
-
-            # pull latest backend image
-            sudo docker pull kstkaan/url-backend:latest
-
-            # stop + remove the old backend container 
-            sudo docker compose stop backend || true
-            sudo docker compose rm -f backend || true
-
-            # recreate using the new image
-            sudo docker compose up -d backend --force-recreate
-
-            # pull latest frontend image
-            sudo docker pull kstkaan/url-frontend:latest
-
-            # stop + remove the old frontend container 
-            sudo docker compose stop frontend || true
-            sudo docker compose rm -f frontend || true
-
-            # recreate using the new image
-            sudo docker compose up -d frontend --force-recreate
-
+            sudo docker compose pull
+            sudo docker compose up -d --force-recreate --remove-orphans
             sudo docker image prune -f
-            echo "Deploy complete for SHA: $IMAGE_TAG"
+            echo "Deploy complete"
