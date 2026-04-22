@@ -23,21 +23,21 @@ jobs:
             sudo docker pull kstkaan/url-backend:latest
 
             # stop + remove the old backend container 
-            sudo docker-compose stop backend || true
-            sudo docker-compose rm -f backend || true
+            sudo docker compose stop backend || true
+            sudo docker compose rm -f backend || true
 
             # recreate using the new image
-            sudo docker-compose up -d backend --force-recreate
+            sudo docker compose up -d backend --force-recreate
 
             # pull latest frontend image
             sudo docker pull kstkaan/url-frontend:latest
 
             # stop + remove the old frontend container 
-            sudo docker-compose stop frontend || true
-            sudo docker-compose rm -f frontend || true
+            sudo docker compose stop frontend || true
+            sudo docker compose rm -f frontend || true
 
             # recreate using the new image
-            sudo docker-compose up -d frontend --force-recreate
+            sudo docker compose up -d frontend --force-recreate
 
             sudo docker image prune -f
             echo "Deploy complete for SHA: $IMAGE_TAG"
