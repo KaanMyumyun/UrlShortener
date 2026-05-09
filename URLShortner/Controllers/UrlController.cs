@@ -35,7 +35,7 @@ public class UrlController : ControllerBase
         }
     }
 
-    [HttpGet("{code}")]
+    [HttpGet("/{code}")]
     public async Task<IActionResult> ReturnUrl(string code)
     {
         var result = await _service.URlReturn(code);
