@@ -15,7 +15,8 @@ builder.Services.AddCors(options =>
             "https://localhost:5173",
             "http://localhost:3000",
             "https://localhost:3000",
-            "urlshortener-az5.pages.dev"
+            "urlshortener-az5.pages.dev",
+            "https://urlshortener-p7ao.onrender.com"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
