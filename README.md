@@ -1,12 +1,61 @@
-# URL Shortener 
+# URL Shortener
 
-A full-stack **URL Shortener** application built with **ASP.NET Core Web API** and a **React + TypeScript + Vite** frontend.
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Click_Here-success?style=for-the-badge&logo=cloudflare)](https://urlshortener-az5.pages.dev/)
 
-The project focuses on clean API design, proper data modeling with Entity Framework Core, and cloud-ready architecture.
+A full-stack **URL Shortener** built with **ASP.NET Core Web API** and a **React + TypeScript + Vite** frontend.
 
 ---
 
-# Overview
+##  Live Demo
+
+| Layer | Service | Link |
+| ----- | ------- | ---- |
+| Frontend | Cloudflare Pages | [urlshortener-az5.pages.dev](https://urlshortener-az5.pages.dev/) |
+| Backend API | Render | [urlshortener-p7ao.onrender.com](https://urlshortener-p7ao.onrender.com) |
+| Database | Neon (Serverless PostgreSQL) | Persistent, always on |
+
+>  The backend runs on a free Render instance. If inactive, it may take **30–60 seconds to spin up** on first request.
+
+---
+
+## Deployment
+
+### Free Cloud Hosting (Primary)
+
+* **Frontend:** Hosted on [Cloudflare Pages](https://pages.cloudflare.com/)
+* **Backend API:** Hosted on [Render](https://render.com/)
+* **Database:** Serverless PostgreSQL hosted on [Neon](https://neon.tech/)
+
+### Self-Hosted (Azure VM)
+
+* **Frontend:** React build served via Nginx container
+* **Backend API:** ASP.NET Core container on port 8080
+* **Database:** Serverless PostgreSQL hosted on [Neon](https://neon.tech/) *(Shared with the free tier — data persists across deployments)*
+* **Web Server:** Nginx reverse proxy with SSL/HTTPS via Let's Encrypt
+* **Instance:** Azure VM with Docker and Docker Compose
+* **CI/CD:** GitHub Actions — auto-deploys on merge to main
+
+---
+
+## DevOps & Infrastructure
+
+### CI/CD Pipeline (GitHub Actions)
+- Branch protection on `main` — all changes require a passing pipeline before merge
+- On merge to `main`: Docker images built and pushed to Docker Hub
+- Images tagged with both `latest` and commit SHA for easy rollback
+- Automated deployment to Azure VM via SSH on successful build
+
+### Tech Stack
+- **CI/CD:** GitHub Actions
+- **Containerization:** Docker, Docker Compose
+- **Web Server:** Nginx + Let's Encrypt (SSL)
+- **Cloud:** Azure VM
+- **Registry:** Docker Hub
+- **Database:** Neon (Serverless PostgreSQL)
+
+---
+
+## Overview
 
 The application allows users to:
 
@@ -21,30 +70,27 @@ The system is split into two independent parts:
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-## Backend
-
+### Backend
 * ASP.NET Core Web API
 * Entity Framework Core
 * PostgreSQL
 * Swagger / OpenAPI
 
-## Frontend
-
+### Frontend
 * React
 * TypeScript
 * Vite
 
-## Tooling
-
+### Tooling
 * .NET SDK 8+
 * Node.js 18+
 * npm
 
 ---
 
-# Project Structure
+## Project Structure
 
 ```
 UrlShortener
@@ -64,19 +110,14 @@ UrlShortener
 
 ---
 
-# Getting Started
+## Getting Started
 
-## Prerequisites
-
-Make sure you have installed:
-
+### Prerequisites
 * .NET SDK 8.0+
 * Node.js 18+
 * PostgreSQL
 
----
-
-## Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/KaanMyumyun/UrlShortener.git
@@ -85,7 +126,7 @@ cd UrlShortener
 
 ---
 
-# Backend – Run the API
+## Backend – Run the API
 
 ```bash
 cd URLShortner
@@ -93,21 +134,19 @@ dotnet restore
 dotnet run
 ```
 
-The API will be available at:
-
+API available at:
 ```
 http://localhost:5245
 ```
 
 Swagger UI:
-
 ```
 http://localhost:5245/swagger
 ```
 
 ---
 
-# Frontend – Run the UI
+## Frontend – Run the UI
 
 ```bash
 cd front-end
@@ -116,14 +155,21 @@ npm run dev
 ```
 
 Frontend runs at:
-
 ```
 http://localhost:5173
 ```
 
 ---
 
-# API Endpoints
+## Run with Docker
+
+```bash
+docker compose up --build
+```
+
+---
+
+## API Endpoints
 
 | Method | Endpoint                | Description                  |
 | -----: | ----------------------- | ---------------------------- |
@@ -132,95 +178,50 @@ http://localhost:5173
 
 ---
 
-# Request & Response Examples
+## Request & Response Examples
 
-## Create Short URL
-
-**Endpoint**
+### Create Short URL
 
 ```
 POST /api/Url/CreateShortUrl
 ```
 
-**Request Body**
-
+Request body:
 ```json
 {
   "url": "https://www.youtube.com/"
 }
 ```
 
-**Response – 200 OK**
-
+Response:
 ```json
 {
-  "shortUrl": "http://localhost:5245/Q1g3Cx0"
+  "shortUrl": "https://urlshortener-p7ao.onrender.com/Q1g3Cx0"
 }
 ```
 
----
-
-## Redirect to Original URL
-
-**Endpoint**
+### Redirect to Original URL
 
 ```
 GET /api/Url/{code}
 ```
 
-**Example**
-
-```
-GET /api/Url/Q1g3Cx0
-```
-
-**Behavior**
-
-* Redirects the client to the original URL
-* Returns an HTTP redirect response
+Redirects the client to the original URL.
 
 ---
 
-# Error Handling
-
-The API uses sdtandard HTTP status codes:
+## Error Handling
 
 * `200 OK` – Request successful
 * `400 Bad Request` – Invalid input or malformed URL
 * `404 Not Found` – Short code not found
 * `500 Internal Server Error` – Unexpected error
 
-**Example Error Response**
-
-```json
-{
-  "error": "Invalid URL format"
-}
-```
-
 ---
 
-# Database
+## Database
 
-The backend uses **Entity Framework Core** with **PostgreSQL** to store shortened URLs.
-
-### Database Name
-
-```
-UrlShortenerDb
-```
-
----
-
-## PostgreSQL – Create Database
-
-```sql
-CREATE DATABASE "UrlShortenerDb";
-```
-
----
-
-## PostgreSQL – Create Table
+Entity Framework Core with PostgreSQL (Neon serverless).
 
 ```sql
 CREATE TABLE "ShortenUrls" (
@@ -230,109 +231,33 @@ CREATE TABLE "ShortenUrls" (
     "ShortUrl" TEXT NOT NULL,
     "CreatedOnUtc" TIMESTAMP NOT NULL
 );
-```
 
-Recommended index for fast lookups:
-
-```sql
-CREATE UNIQUE INDEX idx_shortenurls_code
-ON "ShortenUrls" ("Code");
+CREATE UNIQUE INDEX idx_shortenurls_code ON "ShortenUrls" ("Code");
 ```
 
 ---
 
-# Entity Model
+## Security
 
-```csharp
-public class ShortenUrl
-{
-    public Guid Id { get; set; }
-    public string LongUrl { get; set; } = string.Empty;
-    public string Code { get; set; } = string.Empty;
-    public string ShortUrl { get; set; } = string.Empty;
-    public DateTime CreatedOnUtc { get; set; }
-}
-```
-
----
-
-# Security Considerations
-
-* URL input is validated before processing
+* URL input validated before processing
 * Redirects only occur for stored URLs
 * No sensitive data stored client-side
-* HTTPS should be enforced in production
-* Secrets will be handled via environment variables
+* HTTPS enforced in production
+* Secrets managed via environment variables
 
 ---
 
-# Cloud Hosting & Deployment (Planned)
+## Project Goals
 
-The application is designed to be **cloud-ready**.
+* ✅ Full-stack URL shortener with clean API design
+* ✅ Deployed to Cloudflare Pages + Render + Neon
+* ✅ Containerized with Docker and Docker Compose
+* ✅ CI/CD pipeline with GitHub Actions
+* ✅ Self-hosted on Azure VM with Nginx and SSL
 
-Planned improvements:
+## Roadmap
 
-* Dockerized backend and frontend
-* Docker Compose for local and cloud parity
-* Cloud-hosted PostgreSQL instance
-* Environment-based configuration
-* Container deployment to a cloud provider
-
----
-
-# Containerization (Planned)
-
-* Dockerfile for ASP.NET Core API
-* Dockerfile for React frontend
-* Optional database container for development
-* One-command startup using Docker Compose
-
----
-
-# Scalability & Performance (Future Work)
-
-* Indexing on short URL codes
-* Caching frequently accessed URLs
-* Rate limiting to prevent abuse
-* Structured logging and monitoring
-
----
-
-# Planned Cloud Hosting
-
-The application is designed with cloud deployment in mind and will be hosted on a cloud platform in the future.
-
-Planned hosting approach:
-
-- Dockerized backend and frontend
-- Cloud-hosted PostgreSQL database
-- Environment-based configuration (Development / Production)
-- Secure secrets management using environment variables
-- HTTPS-enabled public access
-
----
-
-# Testing Strategy (Planned)
-
-* Unit tests for URL generation logic
-* Integration tests for API endpoints
-* Frontend component tests
-
----
-
-# Known Limitations
-
-* No authentication or authorization
-* No analytics or click tracking
-* No custom short codes yet
-
----
-
-# Project Goals
-
-* Practice full-stack development
-* Learn cloud-ready application design
-* Build a production-style URL shortener
-* Apply clean backend architecture principles
-
-
+* Click tracking and analytics
+* Custom short codes
+* Rate limiting
+* Unit and integration tests
