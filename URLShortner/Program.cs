@@ -12,11 +12,10 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "http://localhost:5173",
-            "https://localhost:5173",
-            "http://localhost:3000",
-            "https://localhost:3000",
-            "https://urlshortener-az5.pages.dev/"
-           
+                "https://localhost:5173",
+                "http://localhost:3000",
+                "https://localhost:3000",
+                "https://urlshortener-az5.pages.dev"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -49,17 +48,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-// app.UseHttpsRedirection();
-app.UseRouting();
 app.UseCors("ReactPolicy");
+
 app.MapControllers();
-// endpoint that creates the short url
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Database.Migrate();
 }
 
-app.Run();
+
 app.Run();
