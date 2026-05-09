@@ -33,7 +33,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
-
+//gr
 // we register our service so it can be injected
 builder.Services.AddScoped<iUrlShorteningService,UrlShorteningService>();
 builder.Services.AddControllers();
