@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+
 [ApiController]
 [Route("api/[controller]")]
 public class UrlController : ControllerBase
 {
     private readonly iUrlShorteningService _service;
+
     public UrlController(iUrlShorteningService service)
     {
         _service = service;
@@ -16,9 +18,11 @@ public class UrlController : ControllerBase
         {
             return BadRequest(ModelState);
         }
+
         try
         {
             var shortUrl = await _service.ShortenUrlRequest(dto, HttpContext);
+
             return Ok(new { shortUrl });
         }
         catch (ArgumentException ex)
@@ -27,16 +31,20 @@ public class UrlController : ControllerBase
         }
         catch (Exception ex)
         {
-            return BadRequest(new { error = ex.Message });
+            return StatusCode(500, new { error = ex.Message });
         }
     }
 
-    [HttpGet("/{code}")]
+    [HttpGet("{code}")]
     public async Task<IActionResult> ReturnUrl(string code)
     {
         var result = await _service.URlReturn(code);
+
         if (string.IsNullOrWhiteSpace(result))
+        {
             return NotFound("No url like that");
+        }
+
         return Redirect(result);
     }
 }
