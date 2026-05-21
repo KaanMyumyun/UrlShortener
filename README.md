@@ -41,19 +41,52 @@ A full-stack **URL Shortener** built with **ASP.NET Core Web API** and a **React
 
 ### CI/CD Pipeline (GitHub Actions)
 - Branch protection on `main` — all changes require a passing pipeline before merge
+- Unit tests run automatically on every pull request
 - On merge to `main`: Docker images built and pushed to Docker Hub
 - Images tagged with both `latest` and commit SHA for easy rollback
-- Automated deployment to Azure VM via SSH on successful build
+- Automated deployment to EC2 via SSH on successful build
+
+### Infrastructure as Code (Terraform)
+- Full AWS infrastructure provisioned with Terraform (VPC, subnet, security groups, EC2)
+- Automated provisioner script — spins up a fresh EC2 with Docker, Nginx, SSL, Prometheus, Grafana, and the full app stack on first boot
+- Secrets managed via Terraform variables, never hardcoded
+- Repository: [https://github.com/KaanMyumyun/IaCURLShortner]
 
 ### Tech Stack
 - **CI/CD:** GitHub Actions
 - **Containerization:** Docker, Docker Compose
 - **Web Server:** Nginx + Let's Encrypt (SSL)
-- **Cloud:** Azure VM
+- **Cloud:** AWS EC2 (Amazon Linux 2023)
 - **Registry:** Docker Hub
 - **Database:** Neon (Serverless PostgreSQL)
 
+### Monitoring
+
+The self-hosted deployment includes a full observability stack:
+
+* **Prometheus** — scrapes metrics from the backend, node exporter, and cAdvisor every 60 seconds
+* **Grafana** — dashboards for infrastructure and application health:
+  * Node Exporter dashboard — CPU, memory, disk, and network metrics for the EC2 instance
+  * cAdvisor dashboard — per-container CPU and memory usage
+  * Backend dashboard — ASP.NET Core HTTP metrics (request rate, response times, status codes)
+* **Alerts configured for:**
+  * CPU usage above 80%
+  * Disk usage above 90%
+  * Frontend container health
+  * Backend container health
+  * Overall system status (EVERYTHING UP)
+* **Backend HTTP metrics** enabled via `app.UseHttpMetrics()` (prometheus-net middleware)
+- [Grafana Dashboards](https://github.com/KaanMyumyun/grafanadashboards) — Monitoring dashboards for Prometheus and Loki
+
+### Logging
+
+- Grafana Loki — centralized log aggregation for all containers
+- Promtail — log shipping agent, auto-discovers Docker containers
+- Custom Grafana dashboard — backend logs, frontend logs, and error rate panels
+- Full observability stack: metrics (Prometheus) + logs (Loki) in one Grafana instance
+
 ---
+
 
 ## Overview
 
