@@ -39,13 +39,22 @@ export default function UrlShortener() {
   };
 
   return (
+  <>
+    <title>Free URL Shortener</title>
+
+    <meta
+      name="description"
+      content="Fast and secure URL shortener for creating short shareable links."
+    />
+
+    <meta name="robots" content="index, follow" />
+
     <div
       style={{
         minHeight: "100vh",
         width: "100%",
         background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
         fontFamily: "system-ui, -apple-system, sans-serif",
-
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -74,6 +83,7 @@ export default function UrlShortener() {
           >
             URL Shortener
           </h1>
+
           <p
             style={{
               color: "rgba(255, 255, 255, 0.95)",
@@ -116,6 +126,7 @@ export default function UrlShortener() {
                 >
                   Paste your long URL here
                 </label>
+
                 <input
                   type="url"
                   value={url}
@@ -135,7 +146,8 @@ export default function UrlShortener() {
                   }}
                   onFocus={(e) => {
                     e.target.style.borderColor = "#667eea";
-                    e.target.style.boxShadow = "0 0 0 5px rgba(102, 126, 234, 0.15)";
+                    e.target.style.boxShadow =
+                      "0 0 0 5px rgba(102, 126, 234, 0.15)";
                   }}
                   onBlur={(e) => {
                     e.target.style.borderColor = "#e5e7eb";
@@ -153,10 +165,12 @@ export default function UrlShortener() {
                   fontSize: "22px",
                   fontWeight: "700",
                   color: "white",
-                  background: loading || !url.trim() ? "#9ca3af" : "#667eea",
+                  background:
+                    loading || !url.trim() ? "#9ca3af" : "#667eea",
                   border: "none",
                   borderRadius: "14px",
-                  cursor: loading || !url.trim() ? "not-allowed" : "pointer",
+                  cursor:
+                    loading || !url.trim() ? "not-allowed" : "pointer",
                   transition: "all 0.3s",
                   boxShadow:
                     loading || !url.trim()
@@ -205,7 +219,15 @@ export default function UrlShortener() {
                 >
                   ✗ Error
                 </div>
-                <div style={{ fontSize: "17px", color: "#dc2626" }}>{error}</div>
+
+                <div
+                  style={{
+                    fontSize: "17px",
+                    color: "#dc2626",
+                  }}
+                >
+                  {error}
+                </div>
               </div>
             )}
           </div>
@@ -214,11 +236,13 @@ export default function UrlShortener() {
           {shortUrl && !error && (
             <div
               style={{
-                background: "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)",
+                background:
+                  "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)",
                 borderRadius: "24px",
                 padding: "60px 80px",
                 border: "4px solid #10b981",
-                boxShadow: "0 25px 50px -12px rgba(16, 185, 129, 0.4)",
+                boxShadow:
+                  "0 25px 50px -12px rgba(16, 185, 129, 0.4)",
               }}
             >
               <div
@@ -274,26 +298,15 @@ export default function UrlShortener() {
                     borderRadius: "14px",
                     cursor: "pointer",
                     transition: "all 0.3s",
-                    boxShadow: "0 8px 20px rgba(16, 185, 129, 0.4)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#059669";
-                    e.currentTarget.style.transform = "translateY(-3px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 12px 28px rgba(16, 185, 129, 0.5)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "#10b981";
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 20px rgba(16, 185, 129, 0.4)";
+                    boxShadow:
+                      "0 8px 20px rgba(16, 185, 129, 0.4)",
                   }}
                 >
                   📋 Copy to Clipboard
                 </button>
 
                 <button
-                  onClick={() => window.open(shortUrl, '_blank')}
+                  onClick={() => window.open(shortUrl, "_blank")}
                   style={{
                     flex: 1,
                     padding: "24px",
@@ -305,19 +318,6 @@ export default function UrlShortener() {
                     borderRadius: "14px",
                     cursor: "pointer",
                     transition: "all 0.3s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = "#667eea";
-                    e.currentTarget.style.color = "white";
-                    e.currentTarget.style.transform = "translateY(-3px)";
-                    e.currentTarget.style.boxShadow =
-                      "0 8px 20px rgba(102, 126, 234, 0.4)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "white";
-                    e.currentTarget.style.color = "#667eea";
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "none";
                   }}
                 >
                   🔗 Test Link
@@ -341,5 +341,6 @@ export default function UrlShortener() {
         </div>
       </div>
     </div>
-  );
+  </>
+);
 }
